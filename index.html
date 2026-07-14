@@ -33,12 +33,12 @@ fieldset:first-of-type{margin-top:0}
 legend{font-size:1rem;font-weight:600;line-height:1.5;margin-bottom:4px}
 legend .req{color:var(--primary-strong)}
 .hint{font-size:0.8125rem;color:var(--ink-tertiary);margin-bottom:10px}
-input[type=text],textarea{
+input[type=text],input[type=tel],textarea{
   width:100%;padding:12px 14px;border:1px solid var(--line);border-radius:var(--r-md);
   font:inherit;color:var(--ink);background:var(--surface-sub);
 }
-input[type=text]::placeholder,textarea::placeholder{color:var(--placeholder)}
-input[type=text]:focus,textarea:focus{outline:none;border-color:var(--primary);background:var(--surface)}
+input[type=text]::placeholder,input[type=tel]::placeholder,textarea::placeholder{color:var(--placeholder)}
+input[type=text]:focus,input[type=tel]:focus,textarea:focus{outline:none;border-color:var(--primary);background:var(--surface)}
 textarea{resize:vertical;min-height:72px}
 .choices{display:flex;flex-direction:column;gap:8px}
 .choices.row{flex-direction:row;flex-wrap:wrap}
@@ -79,23 +79,44 @@ button[type=submit]:disabled{opacity:.5;cursor:default}
   <form id="reviewForm" novalidate>
     <div class="card">
       <h1>세션, 어떠셨나요?</h1>
-      <p class="intro">2~3분이면 끝나요. 남겨주시면 <strong>세션에서 나온 이야기 정리</strong>(받은 질문 + 남기신 문장)를 보내드리고, <strong>정식 출시 때 무료 이용권</strong>을 드려요.</p>
-      <p class="privacy">답변은 연구용으로만 쓰고, 연락처는 정리·이용권 전달에만 사용한 뒤 검증이 끝나면 지웁니다. 오디션·캐스팅이 아니며, 영상은 외부에 공유하지 않습니다.</p>
+      <p class="intro">2~3분이면 끝나요. 남겨주신 이야기는 <strong>다음 버전을 만드는 데</strong>만 씁니다. 마지막에 <strong>대면 인터뷰</strong>(약 30분)를 신청하실 수 있어요 — 참여해 주시면 <strong>2만원 상당 네이버페이 포인트</strong>를 드립니다.</p>
+      <p class="privacy">답변은 연구용으로만 쓰고, 전화번호는 남겨주신 분께 연락드리는 데만 사용한 뒤 검증이 끝나면 지웁니다. 오디션·캐스팅이 아니며, 영상은 외부에 공유하지 않습니다.</p>
     </div>
 
     <div class="card">
-      <fieldset data-name="nickname" data-required>
-        <legend>세션에서 쓴 닉네임이나, 올리신 영상 제목 <span class="req">*</span></legend>
-        <p class="hint">어느 세션이었는지 찾아서 정리를 만들어 드리기 위해 필요해요.</p>
-        <input type="text" name="nickname" placeholder="예: 무대공포증 / 햄릿 독백 32초">
-        <p class="err">이 항목을 채워주세요.</p>
+      <fieldset data-name="q_flow" data-required>
+        <legend>세션이 어디까지 진행됐나요? <span class="req">*</span></legend>
+        <div class="choices">
+          <label class="choice"><input type="radio" name="q_flow" value="업로드만">영상을 올리기만 하고 나왔어요</label>
+          <label class="choice"><input type="radio" name="q_flow" value="대화 중간 이탈">질문 대화를 하다가 중간에 나왔어요</label>
+          <label class="choice"><input type="radio" name="q_flow" value="문장까지 완료">마지막에 내 문장을 남기는 데까지 갔어요</label>
+        </div>
+        <div class="follow" id="flowExit"><input type="text" name="q_flow_exit_why" placeholder="어디서, 왜 멈추게 됐는지 한 줄 (선택)"></div>
+        <p class="err">하나를 골라주세요.</p>
       </fieldset>
 
-      <fieldset data-name="contact" data-required>
-        <legend>정리를 받을 연락 수단 하나 <span class="req">*</span></legend>
-        <p class="hint">인스타 핸들, 카카오톡 ID, 전화번호 중 편한 것 하나요.</p>
-        <input type="text" name="contact" placeholder="예: @acting_diary">
-        <p class="err">이 항목을 채워주세요.</p>
+      <fieldset data-name="q_obs_wrong" data-required>
+        <legend>AI가 영상에서 짚어준 내용 중, 실제 영상과 다른 게 있었나요? <span class="req">*</span></legend>
+        <div class="choices">
+          <label class="choice"><input type="radio" name="q_obs_wrong" value="없었다">없었어요</label>
+          <label class="choice"><input type="radio" name="q_obs_wrong" value="한두 개">한두 개 있었어요</label>
+          <label class="choice"><input type="radio" name="q_obs_wrong" value="여러 개">여러 개 있었어요</label>
+        </div>
+        <div class="follow" id="obsWrongWhat"><input type="text" name="q_obs_wrong_what" placeholder="어떤 내용이 달랐나요?"></div>
+        <p class="err">하나를 골라주세요.</p>
+      </fieldset>
+
+      <fieldset data-name="q_bad" data-required data-checkgroup>
+        <legend>받은 질문 중에 이런 질문이 있었나요? <span class="req">*</span></legend>
+        <p class="hint">있었던 것을 모두 골라주세요.</p>
+        <div class="choices">
+          <label class="choice"><input type="checkbox" name="q_bad_repeat" value="예">같은 내용을 반복해서 물었어요</label>
+          <label class="choice"><input type="checkbox" name="q_bad_offtopic" value="예">내 영상과 상관없는 걸 물었어요</label>
+          <label class="choice"><input type="checkbox" name="q_bad_unclear" value="예">무슨 뜻인지 이해하기 어려웠어요</label>
+          <label class="choice"><input type="checkbox" name="q_bad_obvious" value="예">답이 뻔해서 굳이 답할 이유가 없었어요</label>
+          <label class="choice"><input type="checkbox" name="q_bad_none" value="예" id="qBadNone">해당하는 게 없었어요</label>
+        </div>
+        <p class="err">하나 이상 골라주세요.</p>
       </fieldset>
     </div>
 
@@ -117,8 +138,16 @@ button[type=submit]:disabled{opacity:.5;cursor:default}
           <label class="choice"><input type="radio" name="q_sentence" value="남겼다">남겼어요</label>
           <label class="choice"><input type="radio" name="q_sentence" value="못 남겼다">못 남겼어요</label>
         </div>
-        <div class="follow" id="sentenceYes"><textarea name="q_sentence_text" placeholder="그 문장을 여기 적어주시면, 정리에 그대로 담아 드려요."></textarea></div>
-        <div class="follow" id="sentenceNo"><input type="text" name="q_sentence_reason" placeholder="어디서 막혔는지 한 줄 (선택)"></div>
+        <div class="follow" id="sentenceYes"><textarea name="q_sentence_text" placeholder="그 문장을 여기에 그대로 적어주세요."></textarea></div>
+        <div class="follow" id="sentenceNo">
+          <div class="choices">
+            <label class="choice"><input type="radio" name="q_sentence_reason" value="질문이 겉돌았다">질문이 내 고민이랑 겉돌았어요</label>
+            <label class="choice"><input type="radio" name="q_sentence_reason" value="무슨 말을 해야 할지 몰랐다">무슨 말을 해야 할지 몰랐어요</label>
+            <label class="choice"><input type="radio" name="q_sentence_reason" value="시간이 없었다">시간이 없어서 다음에 하려고요</label>
+            <label class="choice"><input type="radio" name="q_sentence_reason" value="기타">기타</label>
+          </div>
+          <div class="follow" id="sentenceEtc"><input type="text" name="q_sentence_reason_etc" placeholder="한 줄로 알려주세요 (선택)"></div>
+        </div>
         <p class="err">하나를 골라주세요.</p>
       </fieldset>
 
@@ -169,13 +198,9 @@ button[type=submit]:disabled{opacity:.5;cursor:default}
             <label class="choice"><input type="radio" name="q_understand" value="5">5</label>
           </div>
         </fieldset>
-        <fieldset data-name="q_wrong_obs">
-          <legend>AI가 짚은 것 중 틀렸다고 느낀 게 있었나요?</legend>
-          <input type="text" name="q_wrong_obs" placeholder="무엇이었나요?">
-        </fieldset>
-        <fieldset data-name="q_best_worst">
-          <legend>가장 도움이 된 질문, 또는 불편하게 느껴진 질문은?</legend>
-          <textarea name="q_best_worst"></textarea>
+        <fieldset data-name="q_best">
+          <legend>가장 도움이 된 질문이 있었다면 무엇이었나요?</legend>
+          <textarea name="q_best"></textarea>
         </fieldset>
         <fieldset data-name="q_paid">
           <legend>이 기능이 유료라면 어느 정도까지 고려할 수 있나요?</legend>
@@ -188,10 +213,17 @@ button[type=submit]:disabled{opacity:.5;cursor:default}
       <fieldset data-name="consents">
         <legend>괜찮은 것만 체크해주세요 <span style="font-weight:400;color:var(--ink-tertiary)">(선택)</span></legend>
         <div class="choices">
-          <label class="choice"><input type="checkbox" name="c_interview" value="예">15~20분 화상 인터뷰에 초대받아도 좋아요 (참여 시 감사의 뜻으로 커피쿠폰)</label>
+          <label class="choice"><input type="checkbox" name="c_interview" value="예">대면 인터뷰(약 30분)에 참여할게요 — 참여하시면 <strong>2만원 상당 네이버페이 포인트</strong>를 드려요</label>
           <label class="choice"><input type="checkbox" name="c_followup" value="예">2~3일 뒤 "그 생각, 연습에서 해보셨어요?" 짧은 메시지 받아도 좋아요</label>
           <label class="choice"><input type="checkbox" name="c_tester" value="예">새 버전이 나오면 먼저 써보는 테스터로 연락받고 싶어요</label>
         </div>
+      </fieldset>
+
+      <fieldset data-name="phone" id="phoneField" style="display:none">
+        <legend>연락받을 전화번호 <span class="req">*</span></legend>
+        <p class="hint">체크하신 연락(인터뷰 일정 등)에만 쓰고, 검증이 끝나면 지워요.</p>
+        <input type="tel" name="phone" placeholder="010-0000-0000">
+        <p class="err">연락을 받으시려면 전화번호가 필요해요.</p>
       </fieldset>
     </div>
 
@@ -201,7 +233,7 @@ button[type=submit]:disabled{opacity:.5;cursor:default}
 
   <div id="done" class="card">
     <h1>고맙습니다 🙌</h1>
-    <p>세션 이야기 정리는 1~2일 안에<br>남겨주신 연락처로 보내드릴게요.</p>
+    <p>남겨주신 이야기는 다음 버전에 그대로 반영할게요.<br>인터뷰를 신청하셨다면 곧 연락드려요.</p>
   </div>
 </div>
 
@@ -211,11 +243,35 @@ const ENDPOINT = "PASTE_APPS_SCRIPT_URL_HERE";
 
 const form = document.getElementById("reviewForm");
 
-// 문장 남김 여부에 따라 후속 입력 토글
 form.addEventListener("change", (e) => {
+  // 문장 남김 여부에 따라 후속 입력 토글
   if (e.target.name === "q_sentence") {
     document.getElementById("sentenceYes").classList.toggle("show", e.target.value === "남겼다");
     document.getElementById("sentenceNo").classList.toggle("show", e.target.value === "못 남겼다");
+  }
+  if (e.target.name === "q_sentence_reason") {
+    document.getElementById("sentenceEtc").classList.toggle("show", e.target.value === "기타");
+  }
+  // 대화 중간 이탈 시 이유 입력 표시
+  if (e.target.name === "q_flow") {
+    document.getElementById("flowExit").classList.toggle("show", e.target.value !== "문장까지 완료");
+  }
+  // 틀린 관찰이 있었다면 내용 입력 표시
+  if (e.target.name === "q_obs_wrong") {
+    document.getElementById("obsWrongWhat").classList.toggle("show", e.target.value !== "없었다");
+  }
+  // "해당 없음"과 나머지 실패 유형은 서로 배타
+  if (e.target.name && e.target.name.startsWith("q_bad_") && e.target.checked) {
+    if (e.target.name === "q_bad_none") {
+      form.querySelectorAll('[name^="q_bad_"]:not(#qBadNone)').forEach((c) => { c.checked = false; });
+    } else {
+      document.getElementById("qBadNone").checked = false;
+    }
+  }
+  // 연락받을 항목을 하나라도 체크하면 전화번호 필수
+  if (["c_interview", "c_followup", "c_tester"].includes(e.target.name)) {
+    const anyConsent = !!form.querySelector('[name^="c_"]:checked');
+    document.getElementById("phoneField").style.display = anyConsent ? "" : "none";
   }
 });
 
@@ -224,13 +280,25 @@ form.addEventListener("submit", async (e) => {
   let firstInvalid = null;
   form.querySelectorAll("fieldset[data-required]").forEach((fs) => {
     const name = fs.dataset.name;
-    const field = form.elements[name];
-    const filled = field instanceof RadioNodeList || field.type === "radio"
-      ? !!form.querySelector(`[name="${name}"]:checked`)
-      : field.value.trim() !== "";
+    let filled;
+    if (fs.hasAttribute("data-checkgroup")) {
+      filled = !!fs.querySelector("input[type=checkbox]:checked");
+    } else {
+      const field = form.elements[name];
+      filled = field instanceof RadioNodeList || field.type === "radio"
+        ? !!form.querySelector(`[name="${name}"]:checked`)
+        : field.value.trim() !== "";
+    }
     fs.classList.toggle("invalid", !filled);
     if (!filled && !firstInvalid) firstInvalid = fs;
   });
+  // 연락 동의 시 전화번호 필수
+  const anyConsent = !!form.querySelector('[name^="c_"]:checked');
+  const phoneFs = document.getElementById("phoneField");
+  const phoneMissing = anyConsent && form.elements["phone"].value.trim() === "";
+  phoneFs.classList.toggle("invalid", phoneMissing);
+  if (phoneMissing && !firstInvalid) firstInvalid = phoneFs;
+
   if (firstInvalid) {
     firstInvalid.scrollIntoView({ behavior: "smooth", block: "center" });
     return;
