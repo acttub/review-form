@@ -87,6 +87,13 @@ button[type=submit]:disabled{opacity:.5;cursor:default}
 #done .mark{font-size:44px;margin-bottom:16px}
 #done h1{margin-bottom:12px}
 #done p{color:var(--ink-2)}
+.btn-back{
+  display:inline-flex;align-items:center;justify-content:center;
+  margin-top:28px;padding:0 24px;height:48px;border-radius:12px;
+  background:var(--accent);color:#fff;font-size:15px;font-weight:600;
+  text-decoration:none;transition:background .15s;
+}
+.btn-back:hover{background:var(--accent-strong)}
 #submitErr{text-align:center}
 </style>
 </head>
@@ -204,6 +211,7 @@ button[type=submit]:disabled{opacity:.5;cursor:default}
     <p class="mark">🙌</p>
     <h1>고맙습니다</h1>
     <p>세션 이야기 정리는 1~2일 안에<br>링크 보내드렸던 대화로 보내드릴게요.</p>
+    <a class="btn-back" href="https://acttub.com">acttub로 돌아가기</a>
   </div>
 </div>
 
