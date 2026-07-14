@@ -60,6 +60,9 @@ textarea{resize:vertical;min-height:72px}
 .choice:active{background:var(--accent-soft)}
 .choice:has(input:checked){background:var(--accent-soft);font-weight:600;color:var(--accent-strong)}
 .choice input{accent-color:var(--accent);width:19px;height:19px;flex:none}
+.choice.consent{margin-top:10px;align-items:flex-start;font-size:12.5px;line-height:1.5;color:var(--ink-2)}
+.choice.consent input{margin-top:2px;width:17px;height:17px}
+.choice.consent:has(input:checked){font-weight:400;color:var(--ink-2)}
 .scale{display:flex;gap:6px}
 .scale .seg{
   flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;
@@ -197,9 +200,12 @@ button[type=submit]:disabled{opacity:.5;cursor:default}
 
       <fieldset data-name="phone" id="phoneField">
         <legend>연락받을 전화번호 <span class="req">*</span></legend>
-        <p class="hint">체크하신 연락에만 쓰고, 검증이 끝나면 지워요.</p>
         <input type="tel" name="phone" placeholder="010-0000-0000">
-        <p class="err">연락을 받으시려면 전화번호가 필요해요.</p>
+        <label class="choice consent">
+          <input type="checkbox" name="privacy_consent" value="동의">
+          <span>(필수) 개인정보 수집·이용 동의 — 전화번호를 위에서 체크한 연락(인터뷰·테스터·이용권 안내)에만 사용하고, 검증이 끝나면 30일 안에 지웁니다. 동의하지 않으면 연락 신청 없이 후기만 제출할 수 있어요.</span>
+        </label>
+        <p class="err">연락을 받으시려면 전화번호와 수집 동의가 필요해요.</p>
       </fieldset>
     </div>
 
@@ -221,6 +227,13 @@ const ENDPOINT = "https://script.google.com/macros/s/AKfycbyAGKp_A-anNg3IkcmRDI4
 
 const form = document.getElementById("reviewForm");
 
+// 방문 ID — 방문/이탈/응답 기록을 같은 사람으로 잇는 익명 키 (같은 브라우저 세션에서 유지)
+let VID = sessionStorage.getItem("acttub_vid");
+if (!VID) {
+  VID = Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
+  sessionStorage.setItem("acttub_vid", VID);
+}
+
 // 폼 열림 기록 — 열어본 사람 vs 제출한 사람 비교용 (새로고침 중복 방지)
 if (!sessionStorage.getItem("acttub_visited")) {
   sessionStorage.setItem("acttub_visited", "1");
@@ -228,9 +241,50 @@ if (!sessionStorage.getItem("acttub_visited")) {
     type: "visit",
     visited_at: new Date().toISOString(),
     ref: document.referrer || "",
-    src: location.search || ""
+    src: location.search || "",
+    visit_id: VID
   }) }).catch(function () {});
 }
+
+// 어디까지 답했는지 추적 → 제출 없이 나가면 "이탈" 기록
+const TRACKED = ["q_helpful", "q_helpful_what", "q_unhelpful_what", "q_dialogue", "q_summary", "q_reuse", "seg", "c_interview", "c_tester", "c_coupon", "phone"];
+const answered = new Set();
+let submitted = false;
+let lastExitKey = "";
+
+function trackAnswer(t) {
+  if (!t || !TRACKED.includes(t.name)) return;
+  const filled = t.type === "radio" || t.type === "checkbox" ? t.checked : t.value.trim() !== "";
+  if (filled) answered.add(t.name); else answered.delete(t.name);
+}
+form.addEventListener("change", (e) => { trackAnswer(e.target); });
+form.addEventListener("input", (e) => { trackAnswer(e.target); });
+
+function sendExit() {
+  if (submitted) return;
+  const list = TRACKED.filter(function (n) { return answered.has(n); });
+  const last = list.length ? list[list.length - 1] : "";
+  const payload = {
+    type: "exit",
+    exited_at: new Date().toISOString(),
+    visit_id: VID,
+    answered_count: String(list.length),
+    last_answered: last
+  };
+  // 답한 내용도 함께 저장 — 전화번호는 제출 전이라 제외 (동의 없는 연락처 수집 방지)
+  const fd = new FormData(form);
+  list.forEach(function (n) {
+    if (n === "phone") return;
+    const v = fd.get(n);
+    if (v && String(v).trim() !== "") payload[n] = String(v);
+  });
+  const key = JSON.stringify(payload).replace(payload.exited_at, "");
+  if (key === lastExitKey) return; // 같은 상태로 또 보내지 않음
+  lastExitKey = key;
+  navigator.sendBeacon(ENDPOINT, new Blob([JSON.stringify(payload)], { type: "text/plain" }));
+}
+document.addEventListener("visibilitychange", () => { if (document.visibilityState === "hidden") sendExit(); });
+window.addEventListener("pagehide", sendExit);
 
 form.addEventListener("change", (e) => {
   // 연락받을 항목을 하나라도 체크하면 전화번호 입력 노출
@@ -252,10 +306,11 @@ form.addEventListener("submit", async (e) => {
     fs.classList.toggle("invalid", !filled);
     if (!filled && !firstInvalid) firstInvalid = fs;
   });
-  // 연락 동의 시 전화번호 필수
+  // 연락 동의 시 전화번호 + 개인정보 수집 동의 필수
   const anyConsent = !!form.querySelector('[name^="c_"]:checked');
   const phoneFs = document.getElementById("phoneField");
-  const phoneMissing = anyConsent && form.elements["phone"].value.trim() === "";
+  const phoneMissing = anyConsent &&
+    (form.elements["phone"].value.trim() === "" || !form.elements["privacy_consent"].checked);
   phoneFs.classList.toggle("invalid", phoneMissing);
   if (phoneMissing && !firstInvalid) firstInvalid = phoneFs;
 
@@ -264,7 +319,7 @@ form.addEventListener("submit", async (e) => {
     return;
   }
 
-  const data = { submitted_at: new Date().toISOString() };
+  const data = { submitted_at: new Date().toISOString(), visit_id: VID };
   new FormData(form).forEach((v, k) => { data[k] = v; });
 
   const btn = document.getElementById("submitBtn");
@@ -273,6 +328,7 @@ form.addEventListener("submit", async (e) => {
   try {
     // Apps Script는 CORS 응답 헤더가 없어 no-cors로 보낸다 (응답 본문은 읽지 않음)
     await fetch(ENDPOINT, { method: "POST", mode: "no-cors", body: JSON.stringify(data) });
+    submitted = true; // 제출 완료 — 이탈로 기록하지 않음
     form.style.display = "none";
     document.getElementById("done").style.display = "block";
     window.scrollTo({ top: 0 });
