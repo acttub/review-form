@@ -221,6 +221,17 @@ const ENDPOINT = "https://script.google.com/macros/s/AKfycbyAGKp_A-anNg3IkcmRDI4
 
 const form = document.getElementById("reviewForm");
 
+// 폼 열림 기록 — 열어본 사람 vs 제출한 사람 비교용 (새로고침 중복 방지)
+if (!sessionStorage.getItem("acttub_visited")) {
+  sessionStorage.setItem("acttub_visited", "1");
+  fetch(ENDPOINT, { method: "POST", mode: "no-cors", body: JSON.stringify({
+    type: "visit",
+    visited_at: new Date().toISOString(),
+    ref: document.referrer || "",
+    src: location.search || ""
+  }) }).catch(function () {});
+}
+
 form.addEventListener("change", (e) => {
   // 연락받을 항목을 하나라도 체크하면 전화번호 입력 노출
   if (["c_interview", "c_tester", "c_coupon"].includes(e.target.name)) {
