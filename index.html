@@ -184,6 +184,7 @@ button[type=submit]:disabled{opacity:.5;cursor:default}
         <div class="choices">
           <label class="choice"><input type="checkbox" name="c_interview" value="예">심층 인터뷰(15~20분, 화상 또는 대면)에 초대받아도 좋아요 — 참여하시면 감사의 뜻으로 소정의 사례비를 드려요</label>
           <label class="choice"><input type="checkbox" name="c_tester" value="예">새 버전이 나오면 먼저 써보는 테스터로 연락받고 싶어요</label>
+          <label class="choice"><input type="checkbox" name="c_coupon" value="예">정식 배포 후 무료 이용권 받고 싶어요</label>
         </div>
       </fieldset>
 
@@ -214,7 +215,7 @@ const form = document.getElementById("reviewForm");
 
 form.addEventListener("change", (e) => {
   // 연락받을 항목을 하나라도 체크하면 전화번호 입력 노출
-  if (["c_interview", "c_tester"].includes(e.target.name)) {
+  if (["c_interview", "c_tester", "c_coupon"].includes(e.target.name)) {
     const anyConsent = !!form.querySelector('[name^="c_"]:checked');
     document.getElementById("phoneField").style.display = anyConsent ? "block" : "none";
   }
