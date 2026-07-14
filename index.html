@@ -8,65 +8,95 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
 <style>
 :root{
-  --primary:#0A79FB; --primary-strong:#0355F1; --primary-deep:#0243C4;
-  --primary-soft:#E8F3FF; --primary-soft-hover:#D8EBFF;
-  --neutral:#F2F4F6; --surface:#FFFFFF; --surface-sub:#F9FAFB;
-  --ink:#191F28; --ink-sub:#4E5968; --ink-tertiary:#6B7684;
-  --placeholder:#8B95A1; --line:#E5E8EB; --danger:#F04452;
-  --r-sm:8px; --r-md:12px; --r-lg:16px;
+  --bg:#f2f4f6; --surface:#ffffff; --surface-sub:#f9fafb;
+  --ink:#191f28; --ink-2:#4e5968; --ink-3:#8b95a1;
+  --line:#e5e8eb;
+  --accent:#0a79fb; --accent-strong:#0355f1; --accent-soft:#e8f3ff;
+  --bad:#f04452; --bad-soft:#fdecee;
+  --shadow:0 2px 8px rgba(0,0,0,0.08);
+  --shadow-float:0 8px 24px rgba(0,0,0,0.16);
+}
+@media (prefers-color-scheme: dark){ :root{
+  --bg:#101318; --surface:#1b1f27; --surface-sub:#232834;
+  --ink:#eceef1; --ink-2:#a8b0bc; --ink-3:#6b7684;
+  --line:#2b313c;
+  --accent:#4e93f8; --accent-strong:#6da8ff; --accent-soft:#1c2b45;
+  --bad:#f36672; --bad-soft:#3a2026;
+  --shadow:none; --shadow-float:none;
+}
+/* 짙은 파랑 워드마크가 어두운 배경에 묻히지 않게 */
+.logo{background:#fff;padding:8px 12px;border-radius:12px;height:40px}
 }
 *{box-sizing:border-box;margin:0;padding:0}
 body{
-  font-family:"Pretendard Variable",Pretendard,-apple-system,sans-serif;
-  background:var(--neutral); color:var(--ink);
-  font-size:0.9375rem; line-height:1.6;
+  background:var(--bg); color:var(--ink);
+  font-family:"Pretendard Variable",Pretendard,"Apple SD Gothic Neo","Noto Sans KR",-apple-system,sans-serif;
+  font-size:15px; line-height:1.6;
   -webkit-font-smoothing:antialiased;
+  padding:40px 20px 96px;
 }
-.wrap{max-width:560px;margin:0 auto;padding:24px 16px 64px}
-.card{background:var(--surface);border-radius:var(--r-lg);padding:24px 20px;margin-bottom:16px}
-h1{font-size:1.375rem;font-weight:700;line-height:1.36;letter-spacing:-0.02em;margin-bottom:8px}
-.intro{color:var(--ink-sub)}
-.intro strong{color:var(--ink)}
-.privacy{font-size:0.75rem;line-height:1.5;color:var(--ink-tertiary);margin-top:12px}
-fieldset{border:0;margin-top:24px}
+.wrap{max-width:560px;margin:0 auto}
+.logo{height:24px;display:block;margin-bottom:28px}
+h1{font-size:28px;font-weight:700;letter-spacing:-0.02em;line-height:1.33;margin-bottom:12px}
+.intro{color:var(--ink-2)}
+.intro strong{color:var(--ink);font-weight:600}
+.privacy{font-size:12px;line-height:1.5;color:var(--ink-3);margin-top:16px}
+.card{
+  background:var(--surface); border-radius:16px;
+  padding:24px 22px; margin-top:16px; box-shadow:var(--shadow);
+}
+.card-title{font-size:13px;font-weight:600;color:var(--ink-3);margin-bottom:20px}
+fieldset{border:0;margin-top:32px}
 fieldset:first-of-type{margin-top:0}
-legend{font-size:1rem;font-weight:600;line-height:1.5;margin-bottom:4px}
-legend .req{color:var(--primary-strong)}
-.hint{font-size:0.8125rem;color:var(--ink-tertiary);margin-bottom:10px}
+.card-title + fieldset{margin-top:0}
+legend{font-size:16px;font-weight:600;line-height:1.5;margin-bottom:12px;letter-spacing:-0.01em}
+legend .req{color:var(--accent)}
+legend .opt{font-weight:400;color:var(--ink-3);font-size:13px}
+.hint{font-size:13px;color:var(--ink-3);margin:-6px 0 12px}
 input[type=text],input[type=tel],textarea{
-  width:100%;padding:12px 14px;border:1px solid var(--line);border-radius:var(--r-md);
+  width:100%;padding:14px 16px;border:1.5px solid transparent;border-radius:12px;
   font:inherit;color:var(--ink);background:var(--surface-sub);
+  transition:border-color .15s, background .15s;
 }
-input[type=text]::placeholder,input[type=tel]::placeholder,textarea::placeholder{color:var(--placeholder)}
-input[type=text]:focus,input[type=tel]:focus,textarea:focus{outline:none;border-color:var(--primary);background:var(--surface)}
+input[type=text]::placeholder,input[type=tel]::placeholder,textarea::placeholder{color:var(--ink-3)}
+input[type=text]:focus,input[type=tel]:focus,textarea:focus{outline:none;border-color:var(--accent);background:var(--surface)}
 textarea{resize:vertical;min-height:72px}
 .choices{display:flex;flex-direction:column;gap:8px}
-.choices.row{flex-direction:row;flex-wrap:wrap}
 .choice{
-  display:flex;align-items:center;gap:10px;padding:12px 14px;
-  border:1px solid var(--line);border-radius:var(--r-md);cursor:pointer;background:var(--surface);
+  display:flex;align-items:center;gap:12px;padding:14px 16px;
+  border-radius:12px;cursor:pointer;background:var(--surface-sub);
+  transition:background .15s;
 }
-.choice:has(input:checked){border-color:var(--primary);background:var(--primary-soft)}
-.choice input{accent-color:var(--primary-strong);width:18px;height:18px;flex:none}
-.scale{display:flex;gap:8px}
-.scale .choice{flex:1;justify-content:center;padding:12px 0}
-.scale .choice input{position:absolute;opacity:0;pointer-events:none}
-.scale .choice:has(input:checked){font-weight:600;color:var(--primary-strong)}
-.scale-labels{display:flex;justify-content:space-between;font-size:0.75rem;color:var(--ink-tertiary);margin-top:6px}
-.err{display:none;color:var(--danger);font-size:0.8125rem;margin-top:8px}
+.choice:active{background:var(--accent-soft)}
+.choice:has(input:checked){background:var(--accent-soft);font-weight:600;color:var(--accent-strong)}
+.choice input{accent-color:var(--accent);width:19px;height:19px;flex:none}
+.scale{display:flex;gap:6px}
+.scale .seg{
+  flex:1;display:flex;align-items:center;justify-content:center;
+  height:48px;border-radius:12px;background:var(--surface-sub);
+  font-weight:600;font-variant-numeric:tabular-nums;cursor:pointer;
+  transition:background .15s,color .15s;
+}
+.scale .seg input{position:absolute;opacity:0;pointer-events:none}
+.scale .seg:has(input:checked){background:var(--accent);color:#fff}
+.scale-labels{display:flex;justify-content:space-between;font-size:12px;color:var(--ink-3);margin-top:8px}
+.err{display:none;color:var(--bad);font-size:13px;margin-top:10px}
 fieldset.invalid .err{display:block}
-fieldset.invalid legend{color:var(--danger)}
+fieldset.invalid legend{color:var(--bad)}
+fieldset.invalid .choice,fieldset.invalid .seg{background:var(--bad-soft)}
 button[type=submit]{
-  width:100%;padding:14px;margin-top:24px;border:0;border-radius:var(--r-md);
-  background:var(--primary-strong);color:#fff;font:inherit;font-size:1rem;font-weight:600;cursor:pointer;
+  width:100%;height:56px;margin-top:28px;border:0;border-radius:14px;
+  background:var(--accent);color:#fff;font:inherit;font-size:17px;font-weight:600;
+  cursor:pointer;box-shadow:var(--shadow-float);transition:background .15s;
 }
-button[type=submit]:hover{background:var(--primary-deep)}
+button[type=submit]:hover{background:var(--accent-strong)}
 button[type=submit]:disabled{opacity:.5;cursor:default}
-#done{display:none;text-align:center;padding:48px 20px}
-#done h1{margin-bottom:12px}
-#done p{color:var(--ink-sub)}
-.logo{height:22px;margin-bottom:20px;display:block}
 #phoneField{display:none}
+#done{display:none;text-align:center;padding:64px 20px}
+#done .mark{font-size:44px;margin-bottom:16px}
+#done h1{margin-bottom:12px}
+#done p{color:var(--ink-2)}
+#submitErr{text-align:center}
 </style>
 </head>
 <body>
@@ -74,46 +104,46 @@ button[type=submit]:disabled{opacity:.5;cursor:default}
   <img class="logo" src="acttub-wordmark.png" alt="acttub" onerror="this.style.display='none'">
 
   <form id="reviewForm" novalidate>
-    <div class="card">
-      <h1>세션, 어떠셨나요?</h1>
-      <p class="intro">2분이면 끝나요. 남겨주신 이야기는 <strong>다음 버전을 만드는 데</strong>만 씁니다. 마지막에 <strong>대면 인터뷰</strong>(약 30분)를 신청하실 수 있어요 — 참여해 주시면 <strong>2만원 상당 네이버페이 포인트</strong>를 드립니다.</p>
-      <p class="privacy">답변은 연구용으로만 쓰고, 전화번호는 남겨주신 분께 연락드리는 데만 사용한 뒤 검증이 끝나면 지웁니다. 오디션·캐스팅이 아니며, 영상은 외부에 공유하지 않습니다.</p>
-    </div>
+    <h1>세션, 어떠셨나요?</h1>
+    <p class="intro">2분이면 끝나요. 남겨주시면 <strong>세션에서 나온 이야기 정리</strong>(받은 질문 + 남기신 문장)를 보내드리고, <strong>정식 출시 때 무료 이용권</strong>을 드려요.</p>
+    <p class="privacy">답변은 연구용으로만 쓰고, 전화번호는 남겨주신 분께 연락드리는 데만 사용한 뒤 검증이 끝나면 지웁니다. 오디션·캐스팅이 아니며, 영상은 외부에 공유하지 않습니다.</p>
 
     <div class="card">
+      <p class="card-title">전체적으로</p>
       <fieldset data-name="q_helpful" data-required>
         <legend>이 서비스가 내 연기 연습에 직접적으로 도움이 될 것 같나요? <span class="req">*</span></legend>
         <div class="scale">
-          <label class="choice"><input type="radio" name="q_helpful" value="1">1</label>
-          <label class="choice"><input type="radio" name="q_helpful" value="2">2</label>
-          <label class="choice"><input type="radio" name="q_helpful" value="3">3</label>
-          <label class="choice"><input type="radio" name="q_helpful" value="4">4</label>
-          <label class="choice"><input type="radio" name="q_helpful" value="5">5</label>
+          <label class="seg"><input type="radio" name="q_helpful" value="1">1</label>
+          <label class="seg"><input type="radio" name="q_helpful" value="2">2</label>
+          <label class="seg"><input type="radio" name="q_helpful" value="3">3</label>
+          <label class="seg"><input type="radio" name="q_helpful" value="4">4</label>
+          <label class="seg"><input type="radio" name="q_helpful" value="5">5</label>
         </div>
         <div class="scale-labels"><span>안 될 것 같아요</span><span>잘 모르겠어요</span><span>될 것 같아요</span></div>
         <p class="err">하나를 골라주세요.</p>
       </fieldset>
 
       <fieldset data-name="q_helpful_what">
-        <legend>어떤 부분이 도움이 될 것 같았나요? <span style="font-weight:400;color:var(--ink-tertiary)">(선택)</span></legend>
+        <legend>어떤 부분이 도움이 될 것 같았나요? <span class="opt">(선택)</span></legend>
         <input type="text" name="q_helpful_what" placeholder="기억나는 순간이나 기능 하나면 충분해요">
       </fieldset>
 
       <fieldset data-name="q_unhelpful_what">
-        <legend>어떤 부분이 도움이 안 될 것 같았나요? <span style="font-weight:400;color:var(--ink-tertiary)">(선택)</span></legend>
+        <legend>어떤 부분이 도움이 안 될 것 같았나요? <span class="opt">(선택)</span></legend>
         <input type="text" name="q_unhelpful_what" placeholder="솔직할수록 좋아요">
       </fieldset>
     </div>
 
     <div class="card">
+      <p class="card-title">부분별로</p>
       <fieldset data-name="q_dialogue" data-required>
         <legend>AI와 질문을 주고받은 대화는 어땠나요? <span class="req">*</span></legend>
         <div class="scale">
-          <label class="choice"><input type="radio" name="q_dialogue" value="1">1</label>
-          <label class="choice"><input type="radio" name="q_dialogue" value="2">2</label>
-          <label class="choice"><input type="radio" name="q_dialogue" value="3">3</label>
-          <label class="choice"><input type="radio" name="q_dialogue" value="4">4</label>
-          <label class="choice"><input type="radio" name="q_dialogue" value="5">5</label>
+          <label class="seg"><input type="radio" name="q_dialogue" value="1">1</label>
+          <label class="seg"><input type="radio" name="q_dialogue" value="2">2</label>
+          <label class="seg"><input type="radio" name="q_dialogue" value="3">3</label>
+          <label class="seg"><input type="radio" name="q_dialogue" value="4">4</label>
+          <label class="seg"><input type="radio" name="q_dialogue" value="5">5</label>
         </div>
         <div class="scale-labels"><span>아쉬웠어요</span><span>좋았어요</span></div>
         <p class="err">하나를 골라주세요.</p>
@@ -122,11 +152,11 @@ button[type=submit]:disabled{opacity:.5;cursor:default}
       <fieldset data-name="q_summary" data-required>
         <legend>대화가 끝난 뒤 받은 정리는 어땠나요? <span class="req">*</span></legend>
         <div class="scale">
-          <label class="choice"><input type="radio" name="q_summary" value="1">1</label>
-          <label class="choice"><input type="radio" name="q_summary" value="2">2</label>
-          <label class="choice"><input type="radio" name="q_summary" value="3">3</label>
-          <label class="choice"><input type="radio" name="q_summary" value="4">4</label>
-          <label class="choice"><input type="radio" name="q_summary" value="5">5</label>
+          <label class="seg"><input type="radio" name="q_summary" value="1">1</label>
+          <label class="seg"><input type="radio" name="q_summary" value="2">2</label>
+          <label class="seg"><input type="radio" name="q_summary" value="3">3</label>
+          <label class="seg"><input type="radio" name="q_summary" value="4">4</label>
+          <label class="seg"><input type="radio" name="q_summary" value="5">5</label>
         </div>
         <div class="scale-labels"><span>아쉬웠어요</span><span>좋았어요</span></div>
         <p class="err">하나를 골라주세요.</p>
@@ -135,11 +165,11 @@ button[type=submit]:disabled{opacity:.5;cursor:default}
       <fieldset data-name="q_reuse" data-required>
         <legend>다음 연습 영상도 이 방식으로 보고 싶나요? <span class="req">*</span></legend>
         <div class="scale">
-          <label class="choice"><input type="radio" name="q_reuse" value="1">1</label>
-          <label class="choice"><input type="radio" name="q_reuse" value="2">2</label>
-          <label class="choice"><input type="radio" name="q_reuse" value="3">3</label>
-          <label class="choice"><input type="radio" name="q_reuse" value="4">4</label>
-          <label class="choice"><input type="radio" name="q_reuse" value="5">5</label>
+          <label class="seg"><input type="radio" name="q_reuse" value="1">1</label>
+          <label class="seg"><input type="radio" name="q_reuse" value="2">2</label>
+          <label class="seg"><input type="radio" name="q_reuse" value="3">3</label>
+          <label class="seg"><input type="radio" name="q_reuse" value="4">4</label>
+          <label class="seg"><input type="radio" name="q_reuse" value="5">5</label>
         </div>
         <div class="scale-labels"><span>전혀요</span><span>꼭이요</span></div>
         <p class="err">하나를 골라주세요.</p>
@@ -147,6 +177,7 @@ button[type=submit]:disabled{opacity:.5;cursor:default}
     </div>
 
     <div class="card">
+      <p class="card-title">나에 대해</p>
       <fieldset data-name="seg" data-required>
         <legend>지금 어디에 가까우세요? <span class="req">*</span></legend>
         <div class="choices">
@@ -160,10 +191,11 @@ button[type=submit]:disabled{opacity:.5;cursor:default}
     </div>
 
     <div class="card">
+      <p class="card-title">다음이 있다면</p>
       <fieldset data-name="consents">
-        <legend>괜찮은 것만 체크해주세요 <span style="font-weight:400;color:var(--ink-tertiary)">(선택)</span></legend>
+        <legend>괜찮은 것만 체크해주세요 <span class="opt">(선택)</span></legend>
         <div class="choices">
-          <label class="choice"><input type="checkbox" name="c_interview" value="예">대면 인터뷰(약 30분)에 참여할게요 — 참여하시면 <strong>2만원 상당 네이버페이 포인트</strong>를 드려요</label>
+          <label class="choice"><input type="checkbox" name="c_interview" value="예">심층 인터뷰(15~20분, 화상 또는 대면)에 초대받아도 좋아요 — 참여하시면 감사의 뜻으로 소정의 사례비를 드려요</label>
           <label class="choice"><input type="checkbox" name="c_followup" value="예">2~3일 뒤 "그 생각, 연습에서 해보셨어요?" 짧은 메시지 받아도 좋아요</label>
           <label class="choice"><input type="checkbox" name="c_tester" value="예">새 버전이 나오면 먼저 써보는 테스터로 연락받고 싶어요</label>
         </div>
@@ -171,19 +203,20 @@ button[type=submit]:disabled{opacity:.5;cursor:default}
 
       <fieldset data-name="phone" id="phoneField">
         <legend>연락받을 전화번호 <span class="req">*</span></legend>
-        <p class="hint">체크하신 연락(인터뷰 일정 등)에만 쓰고, 검증이 끝나면 지워요.</p>
+        <p class="hint">체크하신 연락에만 쓰고, 검증이 끝나면 지워요.</p>
         <input type="tel" name="phone" placeholder="010-0000-0000">
         <p class="err">연락을 받으시려면 전화번호가 필요해요.</p>
       </fieldset>
     </div>
 
     <button type="submit" id="submitBtn">후기 보내기</button>
-    <p class="err" id="submitErr" style="text-align:center">전송에 실패했어요. 잠시 후 다시 시도해주세요.</p>
+    <p class="err" id="submitErr">전송에 실패했어요. 잠시 후 다시 시도해주세요.</p>
   </form>
 
   <div id="done" class="card">
-    <h1>고맙습니다 🙌</h1>
-    <p>남겨주신 이야기는 다음 버전에 그대로 반영할게요.<br>인터뷰를 신청하셨다면 곧 연락드려요.</p>
+    <p class="mark">🙌</p>
+    <h1>고맙습니다</h1>
+    <p>세션 이야기 정리는 1~2일 안에<br>링크 보내드렸던 대화로 보내드릴게요.</p>
   </div>
 </div>
 
