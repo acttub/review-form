@@ -1,0 +1,259 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>acttub — 세션 후기</title>
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<style>
+:root{
+  --primary:#0A79FB; --primary-strong:#0355F1; --primary-deep:#0243C4;
+  --primary-soft:#E8F3FF; --primary-soft-hover:#D8EBFF;
+  --neutral:#F2F4F6; --surface:#FFFFFF; --surface-sub:#F9FAFB;
+  --ink:#191F28; --ink-sub:#4E5968; --ink-tertiary:#6B7684;
+  --placeholder:#8B95A1; --line:#E5E8EB; --danger:#F04452;
+  --r-sm:8px; --r-md:12px; --r-lg:16px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family:"Pretendard Variable",Pretendard,-apple-system,sans-serif;
+  background:var(--neutral); color:var(--ink);
+  font-size:0.9375rem; line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:560px;margin:0 auto;padding:24px 16px 64px}
+.card{background:var(--surface);border-radius:var(--r-lg);padding:24px 20px;margin-bottom:16px}
+h1{font-size:1.375rem;font-weight:700;line-height:1.36;letter-spacing:-0.02em;margin-bottom:8px}
+.intro{color:var(--ink-sub)}
+.intro strong{color:var(--ink)}
+.privacy{font-size:0.75rem;line-height:1.5;color:var(--ink-tertiary);margin-top:12px}
+fieldset{border:0;margin-top:24px}
+fieldset:first-of-type{margin-top:0}
+legend{font-size:1rem;font-weight:600;line-height:1.5;margin-bottom:4px}
+legend .req{color:var(--primary-strong)}
+.hint{font-size:0.8125rem;color:var(--ink-tertiary);margin-bottom:10px}
+input[type=text],textarea{
+  width:100%;padding:12px 14px;border:1px solid var(--line);border-radius:var(--r-md);
+  font:inherit;color:var(--ink);background:var(--surface-sub);
+}
+input[type=text]::placeholder,textarea::placeholder{color:var(--placeholder)}
+input[type=text]:focus,textarea:focus{outline:none;border-color:var(--primary);background:var(--surface)}
+textarea{resize:vertical;min-height:72px}
+.choices{display:flex;flex-direction:column;gap:8px}
+.choices.row{flex-direction:row;flex-wrap:wrap}
+.choice{
+  display:flex;align-items:center;gap:10px;padding:12px 14px;
+  border:1px solid var(--line);border-radius:var(--r-md);cursor:pointer;background:var(--surface);
+}
+.choice:has(input:checked){border-color:var(--primary);background:var(--primary-soft)}
+.choice input{accent-color:var(--primary-strong);width:18px;height:18px;flex:none}
+.scale{display:flex;gap:8px}
+.scale .choice{flex:1;justify-content:center;padding:12px 0}
+.scale .choice input{position:absolute;opacity:0;pointer-events:none}
+.scale .choice:has(input:checked){font-weight:600;color:var(--primary-strong)}
+.scale-labels{display:flex;justify-content:space-between;font-size:0.75rem;color:var(--ink-tertiary);margin-top:6px}
+.follow{margin-top:10px;display:none}
+.follow.show{display:block}
+details{border-top:1px solid var(--line);margin-top:24px;padding-top:16px}
+summary{cursor:pointer;font-weight:600;color:var(--ink-sub)}
+.err{display:none;color:var(--danger);font-size:0.8125rem;margin-top:8px}
+fieldset.invalid .err{display:block}
+fieldset.invalid legend{color:var(--danger)}
+button[type=submit]{
+  width:100%;padding:14px;margin-top:24px;border:0;border-radius:var(--r-md);
+  background:var(--primary-strong);color:#fff;font:inherit;font-size:1rem;font-weight:600;cursor:pointer;
+}
+button[type=submit]:hover{background:var(--primary-deep)}
+button[type=submit]:disabled{opacity:.5;cursor:default}
+#done{display:none;text-align:center;padding:48px 20px}
+#done h1{margin-bottom:12px}
+#done p{color:var(--ink-sub)}
+.logo{height:22px;margin-bottom:20px;display:block}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <img class="logo" src="acttub-wordmark.png" alt="acttub" onerror="this.style.display='none'">
+
+  <form id="reviewForm" novalidate>
+    <div class="card">
+      <h1>세션, 어떠셨나요?</h1>
+      <p class="intro">2~3분이면 끝나요. 남겨주시면 <strong>세션에서 나온 이야기 정리</strong>(받은 질문 + 남기신 문장)를 보내드리고, <strong>정식 출시 때 무료 이용권</strong>을 드려요.</p>
+      <p class="privacy">답변은 연구용으로만 쓰고, 연락처는 정리·이용권 전달에만 사용한 뒤 검증이 끝나면 지웁니다. 오디션·캐스팅이 아니며, 영상은 외부에 공유하지 않습니다.</p>
+    </div>
+
+    <div class="card">
+      <fieldset data-name="nickname" data-required>
+        <legend>세션에서 쓴 닉네임이나, 올리신 영상 제목 <span class="req">*</span></legend>
+        <p class="hint">어느 세션이었는지 찾아서 정리를 만들어 드리기 위해 필요해요.</p>
+        <input type="text" name="nickname" placeholder="예: 무대공포증 / 햄릿 독백 32초">
+        <p class="err">이 항목을 채워주세요.</p>
+      </fieldset>
+
+      <fieldset data-name="contact" data-required>
+        <legend>정리를 받을 연락 수단 하나 <span class="req">*</span></legend>
+        <p class="hint">인스타 핸들, 카카오톡 ID, 전화번호 중 편한 것 하나요.</p>
+        <input type="text" name="contact" placeholder="예: @acting_diary">
+        <p class="err">이 항목을 채워주세요.</p>
+      </fieldset>
+    </div>
+
+    <div class="card">
+      <fieldset data-name="q_safety" data-required>
+        <legend>질문들이 어땠나요? <span class="req">*</span></legend>
+        <div class="choices">
+          <label class="choice"><input type="radio" name="q_safety" value="평가받는 느낌">평가받는 느낌이었어요</label>
+          <label class="choice"><input type="radio" name="q_safety" value="같이 들여다보는 느낌">같이 들여다보는 느낌이었어요</label>
+          <label class="choice"><input type="radio" name="q_safety" value="반반">반반이에요</label>
+        </div>
+        <div class="follow show"><input type="text" name="q_safety_why" placeholder="왜 그렇게 느꼈는지 한 줄 (선택)"></div>
+        <p class="err">하나를 골라주세요.</p>
+      </fieldset>
+
+      <fieldset data-name="q_sentence" data-required>
+        <legend>세션 끝에, 내 연기에서 덜 채워졌던 생각을 한 문장으로 남기셨나요? <span class="req">*</span></legend>
+        <div class="choices">
+          <label class="choice"><input type="radio" name="q_sentence" value="남겼다">남겼어요</label>
+          <label class="choice"><input type="radio" name="q_sentence" value="못 남겼다">못 남겼어요</label>
+        </div>
+        <div class="follow" id="sentenceYes"><textarea name="q_sentence_text" placeholder="그 문장을 여기 적어주시면, 정리에 그대로 담아 드려요."></textarea></div>
+        <div class="follow" id="sentenceNo"><input type="text" name="q_sentence_reason" placeholder="어디서 막혔는지 한 줄 (선택)"></div>
+        <p class="err">하나를 골라주세요.</p>
+      </fieldset>
+
+      <fieldset data-name="q_reuse" data-required>
+        <legend>같은 방식으로 다음 연습 영상도 보고 싶나요? <span class="req">*</span></legend>
+        <div class="scale">
+          <label class="choice"><input type="radio" name="q_reuse" value="1">1</label>
+          <label class="choice"><input type="radio" name="q_reuse" value="2">2</label>
+          <label class="choice"><input type="radio" name="q_reuse" value="3">3</label>
+          <label class="choice"><input type="radio" name="q_reuse" value="4">4</label>
+          <label class="choice"><input type="radio" name="q_reuse" value="5">5</label>
+        </div>
+        <div class="scale-labels"><span>전혀요</span><span>꼭이요</span></div>
+        <p class="err">하나를 골라주세요.</p>
+      </fieldset>
+    </div>
+
+    <div class="card">
+      <fieldset data-name="seg" data-required>
+        <legend>지금 어디에 가까우세요? <span class="req">*</span></legend>
+        <div class="choices">
+          <label class="choice"><input type="radio" name="seg" value="입시 준비">입시 준비 중이에요</label>
+          <label class="choice"><input type="radio" name="seg" value="지망·초보">지망·초보 배우예요</label>
+          <label class="choice"><input type="radio" name="seg" value="활동 중">활동 중이에요 (공연·촬영·셀프테이프)</label>
+          <label class="choice"><input type="radio" name="seg" value="기타">기타</label>
+        </div>
+        <p class="err">하나를 골라주세요.</p>
+      </fieldset>
+
+      <fieldset data-name="freq">
+        <legend>연기 연습은 얼마나 자주 하세요? <span style="font-weight:400;color:var(--ink-tertiary)">(선택)</span></legend>
+        <div class="choices row">
+          <label class="choice"><input type="radio" name="freq" value="거의 매일">거의 매일</label>
+          <label class="choice"><input type="radio" name="freq" value="주 2~3회">주 2~3회</label>
+          <label class="choice"><input type="radio" name="freq" value="가끔">가끔</label>
+        </div>
+      </fieldset>
+
+      <details>
+        <summary>2분 더 내주실 수 있다면 (전부 선택)</summary>
+        <fieldset data-name="q_understand">
+          <legend>AI가 내 연기 상황을 이해하고 있다고 느꼈나요?</legend>
+          <div class="scale">
+            <label class="choice"><input type="radio" name="q_understand" value="1">1</label>
+            <label class="choice"><input type="radio" name="q_understand" value="2">2</label>
+            <label class="choice"><input type="radio" name="q_understand" value="3">3</label>
+            <label class="choice"><input type="radio" name="q_understand" value="4">4</label>
+            <label class="choice"><input type="radio" name="q_understand" value="5">5</label>
+          </div>
+        </fieldset>
+        <fieldset data-name="q_wrong_obs">
+          <legend>AI가 짚은 것 중 틀렸다고 느낀 게 있었나요?</legend>
+          <input type="text" name="q_wrong_obs" placeholder="무엇이었나요?">
+        </fieldset>
+        <fieldset data-name="q_best_worst">
+          <legend>가장 도움이 된 질문, 또는 불편하게 느껴진 질문은?</legend>
+          <textarea name="q_best_worst"></textarea>
+        </fieldset>
+        <fieldset data-name="q_paid">
+          <legend>이 기능이 유료라면 어느 정도까지 고려할 수 있나요?</legend>
+          <input type="text" name="q_paid" placeholder="자유롭게 적어주세요">
+        </fieldset>
+      </details>
+    </div>
+
+    <div class="card">
+      <fieldset data-name="consents">
+        <legend>괜찮은 것만 체크해주세요 <span style="font-weight:400;color:var(--ink-tertiary)">(선택)</span></legend>
+        <div class="choices">
+          <label class="choice"><input type="checkbox" name="c_interview" value="예">15~20분 화상 인터뷰에 초대받아도 좋아요 (참여 시 감사의 뜻으로 커피쿠폰)</label>
+          <label class="choice"><input type="checkbox" name="c_followup" value="예">2~3일 뒤 "그 생각, 연습에서 해보셨어요?" 짧은 메시지 받아도 좋아요</label>
+          <label class="choice"><input type="checkbox" name="c_tester" value="예">새 버전이 나오면 먼저 써보는 테스터로 연락받고 싶어요</label>
+        </div>
+      </fieldset>
+    </div>
+
+    <button type="submit" id="submitBtn">후기 보내기</button>
+    <p class="err" id="submitErr" style="text-align:center">전송에 실패했어요. 잠시 후 다시 시도해주세요.</p>
+  </form>
+
+  <div id="done" class="card">
+    <h1>고맙습니다 🙌</h1>
+    <p>세션 이야기 정리는 1~2일 안에<br>남겨주신 연락처로 보내드릴게요.</p>
+  </div>
+</div>
+
+<script>
+// 배포 전 필수: Apps Script 웹앱 URL로 교체 (README.md 참고)
+const ENDPOINT = "PASTE_APPS_SCRIPT_URL_HERE";
+
+const form = document.getElementById("reviewForm");
+
+// 문장 남김 여부에 따라 후속 입력 토글
+form.addEventListener("change", (e) => {
+  if (e.target.name === "q_sentence") {
+    document.getElementById("sentenceYes").classList.toggle("show", e.target.value === "남겼다");
+    document.getElementById("sentenceNo").classList.toggle("show", e.target.value === "못 남겼다");
+  }
+});
+
+form.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  let firstInvalid = null;
+  form.querySelectorAll("fieldset[data-required]").forEach((fs) => {
+    const name = fs.dataset.name;
+    const field = form.elements[name];
+    const filled = field instanceof RadioNodeList || field.type === "radio"
+      ? !!form.querySelector(`[name="${name}"]:checked`)
+      : field.value.trim() !== "";
+    fs.classList.toggle("invalid", !filled);
+    if (!filled && !firstInvalid) firstInvalid = fs;
+  });
+  if (firstInvalid) {
+    firstInvalid.scrollIntoView({ behavior: "smooth", block: "center" });
+    return;
+  }
+
+  const data = { submitted_at: new Date().toISOString() };
+  new FormData(form).forEach((v, k) => { data[k] = v; });
+
+  const btn = document.getElementById("submitBtn");
+  btn.disabled = true;
+  btn.textContent = "보내는 중…";
+  try {
+    // Apps Script는 CORS 응답 헤더가 없어 no-cors로 보낸다 (응답 본문은 읽지 않음)
+    await fetch(ENDPOINT, { method: "POST", mode: "no-cors", body: JSON.stringify(data) });
+    form.style.display = "none";
+    document.getElementById("done").style.display = "block";
+    window.scrollTo({ top: 0 });
+  } catch (err) {
+    document.getElementById("submitErr").style.display = "block";
+    btn.disabled = false;
+    btn.textContent = "후기 보내기";
+  }
+});
+</script>
+</body>
+</html>
