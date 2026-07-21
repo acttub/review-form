@@ -97,6 +97,12 @@ button[type=submit]:disabled{opacity:.5;cursor:default}
   text-decoration:none;transition:background .15s;
 }
 .btn-back:hover{background:var(--accent-strong)}
+.btn-skip{
+  display:block;margin-top:14px;padding:12px 0;border-radius:12px;
+  text-align:center;color:var(--ink-3);font-size:14px;
+  text-decoration:none;transition:background .15s,color .15s;
+}
+.btn-skip:hover{background:var(--surface-sub);color:var(--ink-2)}
 #submitErr{text-align:center}
 </style>
 </head>
@@ -211,6 +217,7 @@ button[type=submit]:disabled{opacity:.5;cursor:default}
 
     <button type="submit" id="submitBtn">후기 보내기</button>
     <p class="err" id="submitErr">전송에 실패했어요. 잠시 후 다시 시도해주세요.</p>
+    <a class="btn-skip" id="backBtn" href="https://acttub.com">후기 없이 acttub로 돌아가기</a>
   </form>
 
   <div id="done" class="card">
@@ -260,6 +267,12 @@ function trackAnswer(t) {
 form.addEventListener("change", (e) => { trackAnswer(e.target); });
 form.addEventListener("input", (e) => { trackAnswer(e.target); });
 
+// 그냥 탭을 닫은 것과 "후기 없이 돌아가기"를 눌러 나간 것을 구분해서 남긴다
+let exitReason = "";
+document.getElementById("backBtn").addEventListener("click", function () {
+  exitReason = "back_to_acttub";
+});
+
 function sendExit() {
   if (submitted) return;
   const list = TRACKED.filter(function (n) { return answered.has(n); });
@@ -269,7 +282,8 @@ function sendExit() {
     exited_at: new Date().toISOString(),
     visit_id: VID,
     answered_count: String(list.length),
-    last_answered: last
+    last_answered: last,
+    exit_reason: exitReason
   };
   // 답한 내용도 함께 저장 — 전화번호는 제출 전이라 제외 (동의 없는 연락처 수집 방지)
   const fd = new FormData(form);
